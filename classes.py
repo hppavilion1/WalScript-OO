@@ -9,45 +9,46 @@ class InvalidArgType(Exception):
 
 class variable:
     def __init__(self, attributes={'local'}):
+        self.attr = '}'.join(attributes)
         if 'local' in attributes:
             self.globality = 0
+            attributes.remove('local')
         elif 'global' in attributes:
             self.globality = 1
+            attributes.remove('global')
         else:
             self.globality = 1
-        attributes.remove('local')
-        attributes.remove('global')
         
-        if not self.local:
+        if self.globality:
             if 'private' in attributes:
                 self.referencability = 0
+                attributes.remove('private')
             elif 'protected' in attributes:
                 self.referencability = 1
+                attributes.remove('protected')
             elif 'public' in attributes:
                 self.referencability = 2
+                attributes.remove('public')
             else:
                 raise InvalidModifier('No accessibility modifier')
-            attributes.remove('private')
-            attributes.remove('protected')
-            attributets.remove('public')
 
         if 'final' in attributes:
             self.isFinal = True
+            attributes.remove('final')
         else:
             self.isFinal = False
-        attributes.remove('final')
 
         if 'static' in attributes:
             self.staticness = 1
+            attributes.remove('static')
         else:
-            self.statcness = 0
-        attributes.remove('static')
-
+            self.staticness = 0
+        
         if 'constant' in attributes:
             self.isconst = True
+            attributes.remove('constant')
         else:
             self.isconst = False
-        attributes.remove('constant')
 
         if len(attributes) > 0:
             raise InvalidModifier('Modifier '+list(attributes)[0]+' used')
@@ -58,6 +59,9 @@ class variable:
             self.value = value
         else:
             raise ConstantReassignment('Tried to reassign constant')
+
+    def __repr__(self):
+        return(attr+' variable('+str(self.value)+')')
 
 class arg:
     def __init__(self, a):
@@ -74,6 +78,8 @@ class arg:
         else:
             self.t = 'raw'
             self.a = a
+    def __repr__(self):
+        return(' Arg('+self.t+', '+self.a+')')
             
 
 class command:
@@ -84,3 +90,6 @@ class command:
         self.args = args
         for x in range(len(args)):
             args[x] = arg(args[x])
+
+    def __repr__(self):
+        return('Command('+'variable('+self.var.attr.replace('}', ', ')+', '+self.varname+'), '+self.com+', '+', '.join([str(a) for a in self.args])+')')
