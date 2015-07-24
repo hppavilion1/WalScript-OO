@@ -6,10 +6,12 @@ import lexer
 libpath = 'Lib/'
 
 def evalarg(exp, env):
-    pass
+    return exp.a
 
 def evalargs(args, env):
-    pass
+    for x in range(len(args)):
+        args[x] = evalarg(args[x], env) #Will change later
+    return(args)
 
 class functionConstruct:
     def _import(self, env, *args):
@@ -45,4 +47,12 @@ def run(script, env={'__loops__':[], '__functions__':{}}, lex=True):
 
         v = script[i].varname
         c = script[i].com
+        args = []
         args = evalargs(script[i].args, env)
+        print(script[i].args)
+
+        if '_'+c in dir(evaluator):
+            o = getattr(evaluator, '_'+c)(env, *args)
+
+if __name__ == '__main__':
+    run(input()+';')

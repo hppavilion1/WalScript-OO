@@ -15,6 +15,8 @@ def lex(script):
         comsplit = com.split('}')[:-1]
         com = comsplit[0].strip()
         args = comsplit[1:]
+        for x in range(len(args)):
+            args[x] = arg(args[x])
 
         varsplit = var.split('}')
         var = varsplit[-1]
